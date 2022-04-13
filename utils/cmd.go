@@ -1,11 +1,10 @@
 package utils
 
 import (
+	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"strconv"
-
-	"github.com/spf13/cobra"
 )
 
 //tla name
