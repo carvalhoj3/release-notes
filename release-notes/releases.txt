@@ -1,0 +1,3 @@
+SRC:929837 [CDS] fix log collection and replication strategy for system_distributed keyspace
+
+[CHG][TP-970958] - up purestorage to 200gb, reasson: performance tests
