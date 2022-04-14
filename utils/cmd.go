@@ -1,17 +1,24 @@
 package utils
 
 import (
+	"fmt"
+	"sort"
+
 	"github.com/spf13/cobra"
-	"log"
-	"os"
-	"strconv"
 )
 
 //tla name
 var tla string
 
 //package number
-var pckg string
+var atual_package int
+var package_released int
+
+//lists
+var chef_messages []string
+var i2_messages []string
+var messages []string
+var totalMessages []string
 
 //Cobra is built on a structure of commands, arguments & flags.
 var cmdRoot = &cobra.Command{
@@ -21,27 +28,40 @@ var cmdRoot = &cobra.Command{
 	Version: "1.0",
 	Run: func(cmd *cobra.Command, args []string) {
 		jenkins_request(jenkinsEndpoint)
-		p, err := strconv.Atoi(pckg)
-		if err != nil {
-			panic(err)
-		}
-		chef_number, chef_job := Get_latest_build_chef(tla, p)
-		i2_number, i2_job := Get_latest_build_i2(tla, p)
 
-		output := Get_messages_chef(chef_job, chef_number) + "\n" + Get_messages_i2(i2_job, i2_number)
+		for i := atual_package; i < package_released; i++ {
+			chef_number, chef_job := Get_latest_build_chef(tla, i)
+			i2_number, i2_job := Get_latest_build_i2(tla, i)
+
+			chef_messages = append(chef_messages, Get_messages_chef(chef_job, chef_number))
+			i2_messages = append(i2_messages, Get_messages_i2(i2_job, i2_number))
+			totalMessages = append(chef_messages, i2_messages...)
+		}
+
+		verifiedMessages := make(map[string]bool)
+		list := []string{}
+		for _, m := range totalMessages {
+			if _, value := verifiedMessages[m]; !value {
+				verifiedMessages[m] = true
+				list = append(list, m)
+				sort.Strings(list)
+			}
+		}
+		fmt.Println(list)
+		//output := Get_messages_chef(chef_job, chef_number) + "\n" + Get_messages_i2(i2_job, i2_number)
 
 		// //generates test file and uses geti2 and getchef messages funcions to write to the file.
-		f, err := os.Create("releases.txt")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
+		// f, err := os.Create("releases.txt")
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
+		// defer f.Close()
 
-		_, err2 := f.Write([]byte(output))
+		// _, err2 := f.Write([]byte(output))
 
-		if err2 != nil {
-			log.Fatal(err2)
-		}
+		// if err2 != nil {
+		// 	log.Fatal(err2)
+		// }
 	},
 }
 
@@ -49,8 +69,10 @@ var cmdRoot = &cobra.Command{
 func init() {
 	cmdRoot.Flags().StringVar(&tla, "tla", "", "TLA name")
 	cmdRoot.MarkFlagRequired("tla")
-	cmdRoot.Flags().StringVar(&pckg, "package", "", "Package number")
+	cmdRoot.Flags().IntVar(&atual_package, "package", 0, "Prod Package number")
 	cmdRoot.MarkFlagRequired("package")
+	cmdRoot.Flags().IntVar(&package_released, "packageR", 0, "Package to be released number")
+	cmdRoot.MarkFlagRequired("packageR")
 }
 
 //Funcion to execute or cobra funcions
