@@ -2,6 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -48,20 +50,21 @@ var cmdRoot = &cobra.Command{
 			}
 		}
 		fmt.Println(list)
-		//output := Get_messages_chef(chef_job, chef_number) + "\n" + Get_messages_i2(i2_job, i2_number)
+		//generates test file and uses geti2 and getchef messages funcions to write to the file.
+		// create file
+		f, err := os.Create("releases.txt")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
 
-		// //generates test file and uses geti2 and getchef messages funcions to write to the file.
-		// f, err := os.Create("releases.txt")
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		// defer f.Close()
-
-		// _, err2 := f.Write([]byte(output))
-
-		// if err2 != nil {
-		// 	log.Fatal(err2)
-		// }
+		seperator := "\n"
+		for _, line := range list {
+			_, err = f.WriteString(line + seperator)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
 	},
 }
 
