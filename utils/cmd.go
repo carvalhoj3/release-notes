@@ -28,10 +28,18 @@ var cmdRoot = &cobra.Command{
 	Short:   "Generate release changes to be deployed in a release",
 	Example: "go run main.go --tla" + " cds" + " --package 300",
 	Version: "1.0",
-	Run: func(cmd *cobra.Command, args []string) {
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		if len(tla) > 5 || len(tla) <= 0 {
+			return fmt.Errorf("Invalid TLA")
+		} else if atual_package > package_released {
+			return fmt.Errorf("Atual package can't be greatter than Package to be released.")
+		}
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) error {
 		jenkins_request(jenkinsEndpoint)
 
-		for i := atual_package; i < package_released; i++ {
+		for i := atual_package; i <= package_released; i++ {
 			chef_number, chef_job := Get_latest_build_chef(tla, i)
 			i2_number, i2_job := Get_latest_build_i2(tla, i)
 
@@ -65,6 +73,7 @@ var cmdRoot = &cobra.Command{
 				log.Fatal(err)
 			}
 		}
+		return nil
 	},
 }
 
@@ -76,6 +85,7 @@ func init() {
 	cmdRoot.MarkFlagRequired("package")
 	cmdRoot.Flags().IntVar(&package_released, "packageR", 0, "Package to be released number")
 	cmdRoot.MarkFlagRequired("packageR")
+
 }
 
 //Funcion to execute or cobra funcions

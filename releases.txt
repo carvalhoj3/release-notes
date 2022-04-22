@@ -1,38 +1,20 @@
-Fix RU
+[CHG][TP-968698] - bump kafka version in all staging envs
 
-Remove local connection for gather_facts for jmx
+[CHG][TP-968698] - delete jenkins job dependency in place of imagebuilder
+[CHG][TP-968698] - keep inter broker protocol version until kafka update in prod
 
-SCR: 982838 remove initd configs
+[CHG][TP-968698] - update inter broker protocol
 
-SCR: 994703 Starting the move to PureStorage
+[CHG][TP-968698] - update kafka rpm build version
 
-SCR:990691 Create more Space in Cassandra
-
-SCR:NA add vip false flag
-
-SRC:929837 [CDS] fix log collection and replication strategy for system_distributed keyspace
-
-Update RU to use nodetool
-
-[CHG][TP - 996 484] - deprecate reaper version
-
-[CHG][TP - 996 484] - quick fix
-
-[CHG][TP-000000] - Add custom local2purestorage
-
-[CHG][TP-970958] - up purestorage to 200gb, reasson: performance tests
-
-[CHG][TP-993884] - Change Reaper heap to 1g - testing purposes
+[CHG][TP-969504] - update kafka rpm with ssl commands
 
 [CHG][TP-998431] - remove sensu from infra env
+[FEAT][TP-1001190] - Permit 7 numbers on TP ticket
+[FEAT][TP-1001190] - Permit 7 numbers on TP ticket
 
-[CHG][TP-999840] - heap size fix
+[FIX[TP-973157]-run list splunk and sensu update
+[FIX][TP-973157]-sensu and splunk update
 
-[CHG][TP-999840] - quick fix
-
-test
-
-update cassandra and reaper cookbook versions
-
-wait until it server awsers status
+[FIX][TP-974944] - fix duplicated alerts and change attribute type to force_override on all envs
 

@@ -99,6 +99,7 @@ func Get_messages_i2(i2_job string, i2_number string) string {
 
 	for j := range ObjMessages.ChangeSet.Items {
 		msg = ObjMessages.ChangeSet.Items[j].Comment
+		msg = strings.TrimSuffix(msg, "\n")
 	}
 	return msg
 }
