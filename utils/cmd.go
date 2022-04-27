@@ -66,9 +66,9 @@ var cmdRoot = &cobra.Command{
 		}
 		defer f.Close()
 
-		seperator := "\n"
+		separator := "\n"
 		for _, line := range list {
-			_, err = f.WriteString(line + seperator)
+			_, err = f.WriteString(line + separator)
 			if err != nil {
 				log.Fatal(err)
 			}
