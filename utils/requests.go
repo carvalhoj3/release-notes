@@ -12,8 +12,8 @@ import (
 )
 
 var jenkinsEndpoint string = "https://jenkins-prd.prd.betfair/"
-var jenkinsUser string = "carvalhoj3"
-var jenkinsToken string = "11035844f6391d96a2d329b468f17ebe7c"
+var jenkinsUser string
+var jenkinsToken string
 
 //Funcion that does a GET request to jenkins endpoint. Return 200 OK or 400 error
 func jenkins_request(jenkinsEndpoint string) *http.Response {
@@ -99,7 +99,7 @@ func Get_messages_i2(i2_job string, i2_number string) string {
 
 	for j := range ObjMessages.ChangeSet.Items {
 		msg = ObjMessages.ChangeSet.Items[j].Comment
-		msg = strings.TrimSuffix(msg, "\n")
+		//msg = strings.TrimSuffix(msg, "\n")
 	}
 	return msg
 }

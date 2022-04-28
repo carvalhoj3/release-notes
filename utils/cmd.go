@@ -29,6 +29,7 @@ var cmdRoot = &cobra.Command{
 	Example: "go run main.go --tla" + " cds" + " --package 300",
 	Version: "1.0",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
+
 		if len(tla) > 5 || len(tla) <= 0 {
 			return fmt.Errorf("Invalid TLA")
 		} else if atual_package > package_released {
@@ -85,7 +86,10 @@ func init() {
 	cmdRoot.MarkFlagRequired("package")
 	cmdRoot.Flags().IntVar(&package_released, "packageR", 0, "Package to be released number")
 	cmdRoot.MarkFlagRequired("packageR")
-
+	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "", "Jenkins User")
+	cmdRoot.MarkFlagRequired("jenkinsUser")
+	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "", "Jenkins Token")
+	cmdRoot.MarkFlagRequired("jenkinsToken")
 }
 
 //Funcion to execute or cobra funcions
