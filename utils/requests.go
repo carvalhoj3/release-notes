@@ -124,3 +124,15 @@ func GetProdPackage(tla string) int {
 	json.Unmarshal(packages, &ObjPackages)
 	return ObjPackages.Target.Number
 }
+
+/*Function that recibes as argument the TLA and Package number and returns the i2 job name
+and i2 build number for the specified TLA and package number*/
+func GetLastPackage(tla string) int {
+	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/api/json", jenkinsEndpoint, tla))
+	builds, _ := io.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	var Obj structures.PromotedPackage
+	json.Unmarshal(builds, &Obj)
+
+	return Obj.LastSuccessfulBuild.Number
+}
