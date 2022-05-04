@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -14,6 +15,7 @@ var tla string
 
 //package number
 var atual_package int
+var at_package string
 var package_released int
 
 //lists
@@ -29,7 +31,10 @@ var cmdRoot = &cobra.Command{
 	Example: "go run main.go --tla" + " cds" + " --package 300" + " --packageR 310",
 	Version: "1.0",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		if cmd.Flag("package").Changed == false {
+		if at_package != "" {
+			atual_package, _ = strconv.Atoi(at_package)
+		}
+		if atual_package == 0 {
 			atual_package = GetProdPackage(tla)
 		}
 		if len(tla) > 5 || len(tla) <= 0 {
@@ -84,7 +89,7 @@ var cmdRoot = &cobra.Command{
 func init() {
 	cmdRoot.Flags().StringVar(&tla, "tla", "", "TLA name")
 	cmdRoot.MarkFlagRequired("tla")
-	cmdRoot.Flags().IntVar(&atual_package, "package", atual_package, "Prod Package number")
+	cmdRoot.Flags().StringVar(&at_package, "package", "", "Prod Package number")
 	//cmdRoot.MarkFlagRequired("package")
 	cmdRoot.Flags().IntVar(&package_released, "packageR", 0, "Package to be released number")
 	cmdRoot.MarkFlagRequired("packageR")
