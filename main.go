@@ -1,6 +1,8 @@
 package main
 
-import "jenkins/utils"
+import (
+	"jenkins/utils"
+)
 
 // var jenkinsEndpoint string = "https://jenkins-prd.prd.betfair/"
 // var jenkinsUser string = "carvalhoj3"

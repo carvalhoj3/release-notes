@@ -15,7 +15,7 @@ var jenkinsEndpoint string = "https://jenkins-prd.prd.betfair/"
 var jenkinsUser string
 var jenkinsToken string
 
-//Funcion that does a GET request to jenkins endpoint. Return 200 OK or 400 error
+//Function that does a GET request to jenkins endpoint. Return 200 OK or 400 error
 func jenkins_request(jenkinsEndpoint string) *http.Response {
 	var hash = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", jenkinsUser, jenkinsToken)))
 	client := &http.Client{}
@@ -28,7 +28,7 @@ func jenkins_request(jenkinsEndpoint string) *http.Response {
 	return resp
 }
 
-/*Funcion that recibes as argument the TLA and Package number and returns the chef job name
+/*Function that recibes as argument the TLA and Package number and returns the chef job name
 and chef build number for the specified TLA and package number*/
 func Get_latest_build_chef(tla string, buildNumber int) (string, string) {
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/%d/api/json", jenkinsEndpoint, tla, buildNumber))
@@ -48,7 +48,7 @@ func Get_latest_build_chef(tla string, buildNumber int) (string, string) {
 	return chef_number, chef_job
 }
 
-/*Funcion that recibes as argument the TLA and Package number and returns the i2 job name
+/*Function that recibes as argument the TLA and Package number and returns the i2 job name
 and i2 build number for the specified TLA and package number*/
 func Get_latest_build_i2(tla string, buildNumber int) (string, string) {
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/%d/api/json", jenkinsEndpoint, tla, buildNumber))
@@ -68,7 +68,7 @@ func Get_latest_build_i2(tla string, buildNumber int) (string, string) {
 	return i2_number, i2_job_name
 }
 
-/*Funcion that GETs the chef package commit messages*/
+/*Function that GETs the chef package commit messages*/
 func Get_messages_chef(chef_job string, chef_number string) string {
 	//var chef_number, chef_job = Get_latest_build_chef("cds", 316)
 	var msg string
@@ -86,7 +86,7 @@ func Get_messages_chef(chef_job string, chef_number string) string {
 	return msg
 }
 
-/*Funcion that GETs the i2 package commit messages*/
+/*Function that GETs the i2 package commit messages*/
 func Get_messages_i2(i2_job string, i2_number string) string {
 	var msg string
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s/%s/api/json", jenkinsEndpoint, i2_job, i2_number))
@@ -102,4 +102,25 @@ func Get_messages_i2(i2_job string, i2_number string) string {
 		//msg = strings.TrimSuffix(msg, "\n")
 	}
 	return msg
+}
+
+/*Function that gets the last promoted package*/
+func GetLastCompletedBuild(tla string) int {
+	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/promotion/process/ie1-prd-promoted/api/json", jenkinsEndpoint, tla))
+	builds, _ := io.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	var ObjBuilds structures.PromotedPackage
+	json.Unmarshal(builds, &ObjBuilds)
+	return ObjBuilds.LastCompletedBuild.Number
+}
+
+/*Function that returns the PROD package number*/
+func GetProdPackage(tla string) int {
+	lastCompletedBuild := GetLastCompletedBuild(tla)
+	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/promotion/process/ie1-prd-promoted/%d/api/json", jenkinsEndpoint, tla, lastCompletedBuild))
+	packages, _ := io.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	var ObjPackages structures.ProdPackage
+	json.Unmarshal(packages, &ObjPackages)
+	return ObjPackages.Target.Number
 }

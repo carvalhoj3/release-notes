@@ -26,10 +26,12 @@ var totalMessages []string
 var cmdRoot = &cobra.Command{
 	Use:     "release-notes",
 	Short:   "Generate release changes to be deployed in a release",
-	Example: "go run main.go --tla" + " cds" + " --package 300",
+	Example: "go run main.go --tla" + " cds" + " --package 300" + " --packageR 310",
 	Version: "1.0",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-
+		if cmd.Flag("package").Changed == false {
+			atual_package = GetProdPackage(tla)
+		}
 		if len(tla) > 5 || len(tla) <= 0 {
 			return fmt.Errorf("Invalid TLA")
 		} else if atual_package > package_released {
@@ -82,8 +84,8 @@ var cmdRoot = &cobra.Command{
 func init() {
 	cmdRoot.Flags().StringVar(&tla, "tla", "", "TLA name")
 	cmdRoot.MarkFlagRequired("tla")
-	cmdRoot.Flags().IntVar(&atual_package, "package", 0, "Prod Package number")
-	cmdRoot.MarkFlagRequired("package")
+	cmdRoot.Flags().IntVar(&atual_package, "package", atual_package, "Prod Package number")
+	//cmdRoot.MarkFlagRequired("package")
 	cmdRoot.Flags().IntVar(&package_released, "packageR", 0, "Package to be released number")
 	cmdRoot.MarkFlagRequired("packageR")
 	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "", "Jenkins User")
