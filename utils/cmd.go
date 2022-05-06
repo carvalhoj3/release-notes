@@ -45,8 +45,11 @@ var cmdRoot = &cobra.Command{
 			package_released = GetLastPackage(tla)
 		}
 		if len(tla) > 5 || len(tla) <= 0 {
+			os.Exit(1)
 			return fmt.Errorf("Invalid TLA")
+
 		} else if atual_package > package_released {
+			os.Exit(1)
 			return fmt.Errorf("Atual package can't be greatter than Package to be released.")
 		}
 		return nil
