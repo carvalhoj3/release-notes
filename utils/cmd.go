@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"sort"
-	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -32,17 +31,10 @@ var cmdRoot = &cobra.Command{
 	Example: "go run main.go --tla" + " cds" + " --package 300" + " --packageR 310",
 	Version: "1.0",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		// We need to support as string, sice we can pass an empty string as parameter
-		if at_package != "" {
-			atual_package, _ = strconv.Atoi(at_package)
-		}
-		if atual_package == 0 {
+		if atual_package == -1 {
 			atual_package = GetProdPackage(tla)
 		}
-		if rl_package != "" {
-			package_released, _ = strconv.Atoi(rl_package)
-		}
-		if package_released == 0 {
+		if package_released == -1 {
 			package_released = GetLastPackage(tla)
 		}
 		if len(tla) > 5 || len(tla) <= 0 {
@@ -97,8 +89,8 @@ var cmdRoot = &cobra.Command{
 func init() {
 	cmdRoot.Flags().StringVar(&tla, "tla", "", "TLA name")
 	cmdRoot.MarkFlagRequired("tla")
-	cmdRoot.Flags().StringVar(&at_package, "package", "", "Prod Package number")
-	cmdRoot.Flags().StringVar(&rl_package, "packageR", "", "Package to be released number")
+	cmdRoot.Flags().IntVar(&atual_package, "package", -1, "Prod Package number")
+	cmdRoot.Flags().IntVar(&package_released, "packageR", -1, "Package to be released number")
 	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "carvalhoj3", "Jenkins User")
 	cmdRoot.MarkFlagRequired("jenkinsUser")
 	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "11035844f6391d96a2d329b468f17ebe7c", "Jenkins Token")
