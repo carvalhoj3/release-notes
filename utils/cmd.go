@@ -31,9 +31,16 @@ var cmdRoot = &cobra.Command{
 	Example: "go run main.go --tla" + " cds" + " --package 300" + " --packageR 310",
 	Version: "1.0",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
+		// We need to support as string, sice we can pass an empty string as parameter
+		// if at_package != "" {
+		// 	atual_package, _ = strconv.Atoi(at_package)
+		// }
 		if atual_package == -1 {
 			atual_package = GetProdPackage(tla)
 		}
+		// if rl_package != "" {
+		// 	package_released, _ = strconv.Atoi(rl_package)
+		// }
 		if package_released == -1 {
 			package_released = GetLastPackage(tla)
 		}
@@ -66,6 +73,7 @@ var cmdRoot = &cobra.Command{
 			}
 		}
 		fmt.Println(list)
+		fmt.Println("https://jenkins-prd.prd.betfair/job/release-notes-generator/ws/release-notes/releases.txt")
 		//generates test file and uses geti2 and getchef messages funcions to write to the file.
 		// create file
 		f, err := os.Create("releases.txt")
