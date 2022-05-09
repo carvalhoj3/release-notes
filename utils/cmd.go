@@ -46,11 +46,11 @@ var cmdRoot = &cobra.Command{
 		}
 		if len(tla) > 5 || len(tla) <= 0 {
 			//fmt.Println("Invalid TLA")
-			fmt.Println("Invalid TLA")
+			fmt.Println(tla, "is an invalid TLA")
 			os.Exit(1)
 
 		} else if atual_package > package_released {
-			fmt.Println("Atual package can't be greatter than Package to be released.")
+			fmt.Printf("Atual package %d can't be greatter than the package to be released %d \n", atual_package, package_released)
 			os.Exit(1)
 		}
 		return nil
