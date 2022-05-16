@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -35,12 +36,20 @@ var cmdRoot = &cobra.Command{
 		// if at_package != "" {
 		// 	atual_package, _ = strconv.Atoi(at_package)
 		// }
+		if reflect.TypeOf(atual_package).Kind() != reflect.Int {
+			fmt.Println(atual_package, "atual package should be an integer")
+			os.Exit(1)
+		}
 		if atual_package == -1 {
 			atual_package = GetProdPackage(tla)
 		}
 		// if rl_package != "" {
 		// 	package_released, _ = strconv.Atoi(rl_package)
 		// }
+		if reflect.TypeOf(package_released).Kind() != reflect.Int {
+			fmt.Println(atual_package, "atual package should be an integer")
+			os.Exit(1)
+		}
 		if package_released == -1 {
 			package_released = GetLastPackage(tla)
 		}
@@ -103,9 +112,9 @@ func init() {
 	cmdRoot.MarkFlagRequired("tla")
 	cmdRoot.Flags().IntVar(&atual_package, "package", -1, "Prod Package number")
 	cmdRoot.Flags().IntVar(&package_released, "packageR", -1, "Package to be released number")
-	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "", "Jenkins User")
+	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "carvalhoj3", "Jenkins User")
 	cmdRoot.MarkFlagRequired("jenkinsUser")
-	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "", "Jenkins Token")
+	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "11035844f6391d96a2d329b468f17ebe7c", "Jenkins Token")
 	cmdRoot.MarkFlagRequired("jenkinsToken")
 }
 

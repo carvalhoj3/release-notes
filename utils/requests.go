@@ -104,7 +104,7 @@ func Get_messages_i2(i2_job string, i2_number string) string {
 	return msg
 }
 
-/*Function that gets the last promoted package*/
+/*Function that gets the last promoted prod package, that is an auxiliary function for GetProdPackage function*/
 func GetLastCompletedBuild(tla string) int {
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/promotion/process/ie1-prd-promoted/api/json", jenkinsEndpoint, tla))
 	builds, _ := io.ReadAll(resp.Body)
@@ -125,8 +125,7 @@ func GetProdPackage(tla string) int {
 	return ObjPackages.Target.Number
 }
 
-/*Function that recibes as argument the TLA and Package number and returns the i2 job name
-and i2 build number for the specified TLA and package number*/
+/*Function that gets the latest successful build number*/
 func GetLastPackage(tla string) int {
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/api/json", jenkinsEndpoint, tla))
 	builds, _ := io.ReadAll(resp.Body)
