@@ -112,9 +112,9 @@ func init() {
 	cmdRoot.MarkFlagRequired("tla")
 	cmdRoot.Flags().IntVar(&atual_package, "package", -1, "Prod Package number")
 	cmdRoot.Flags().IntVar(&package_released, "packageR", -1, "Package to be released number")
-	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "carvalhoj3", "Jenkins User")
+	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "", "Jenkins User")
 	cmdRoot.MarkFlagRequired("jenkinsUser")
-	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "11035844f6391d96a2d329b468f17ebe7c", "Jenkins Token")
+	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "", "Jenkins Token")
 	cmdRoot.MarkFlagRequired("jenkinsToken")
 }
 
