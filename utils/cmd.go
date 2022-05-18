@@ -70,7 +70,6 @@ var cmdRoot = &cobra.Command{
 		for i := atual_package; i <= package_released; i++ {
 			if atual_package == package_released {
 				fmt.Printf("Both packages are equal, nothing to be released.")
-				os.Exit(1)
 			}
 			chef_number, chef_job := Get_latest_build_chef(tla, i)
 			i2_number, i2_job := Get_latest_build_i2(tla, i)
