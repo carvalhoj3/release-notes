@@ -132,6 +132,5 @@ func GetLastPackage(tla string) int {
 	defer resp.Body.Close()
 	var Obj structures.PromotedPackage
 	json.Unmarshal(builds, &Obj)
-
 	return Obj.LastSuccessfulBuild.Number
 }
