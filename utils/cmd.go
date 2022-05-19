@@ -67,6 +67,12 @@ var cmdRoot = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		jenkins_request(jenkinsEndpoint)
 
+		chef_initial, _ := Get_latest_build_chef(tla, atual_package)
+		chef_final, chef_job := Get_latest_build_chef(tla, package_released)
+
+		for j := chef_initial; j <= chef_final; j++ {
+			chef_messages = append(chef_messages, Get_messages_chef(chef_job, j)...)
+		}
 		for i := atual_package; i <= package_released; i++ {
 			if atual_package == package_released {
 				fmt.Printf("Both packages are equal, nothing to be released.")
@@ -74,10 +80,10 @@ var cmdRoot = &cobra.Command{
 			chef_number, chef_job := Get_latest_build_chef(tla, i)
 			i2_number, i2_job := Get_latest_build_i2(tla, i)
 
-			chef_messages = append(chef_messages, Get_messages_chef(chef_job, chef_number))
-			i2_messages = append(i2_messages, Get_messages_i2(i2_job, i2_number))
-			totalMessages = append(chef_messages, i2_messages...)
+			chef_messages = append(chef_messages, Get_messages_chef(chef_job, chef_number)...)
+			i2_messages = append(i2_messages, Get_messages_i2(i2_job, i2_number)...)
 		}
+		totalMessages = append(chef_messages, i2_messages...)
 
 		verifiedMessages := make(map[string]bool)
 		list := []string{}

@@ -8,6 +8,7 @@ import (
 	"jenkins/structures"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -30,9 +31,10 @@ func jenkins_request(jenkinsEndpoint string) *http.Response {
 
 /*Function that recibes as argument the TLA and Package number and returns the chef job name
 and chef build number for the specified TLA and package number*/
-func Get_latest_build_chef(tla string, buildNumber int) (string, string) {
+func Get_latest_build_chef(tla string, buildNumber int) (int, string) {
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s_package/%d/api/json", jenkinsEndpoint, tla, buildNumber))
 	var chef_number, chef_job string
+	var chef_numbers int
 	builds, _ := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	var Obj structures.LastBuild
@@ -41,11 +43,12 @@ func Get_latest_build_chef(tla string, buildNumber int) (string, string) {
 		for j := range Obj.Actions[i].Parameters {
 			if strings.Contains(Obj.Actions[i].Parameters[j].JobName, "chef") {
 				chef_number = Obj.Actions[i].Parameters[j].Number
+				chef_numbers, _ = strconv.Atoi(chef_number)
 				chef_job = Obj.Actions[i].Parameters[j].JobName
 			}
 		}
 	}
-	return chef_number, chef_job
+	return chef_numbers, chef_job
 }
 
 /*Function that recibes as argument the TLA and Package number and returns the i2 job name
@@ -69,10 +72,10 @@ func Get_latest_build_i2(tla string, buildNumber int) (string, string) {
 }
 
 /*Function that GETs the chef package commit messages*/
-func Get_messages_chef(chef_job string, chef_number string) string {
+func Get_messages_chef(chef_job string, chef_number int) []string {
 	//var chef_number, chef_job = Get_latest_build_chef("cds", 316)
-	var msg string
-	resp := jenkins_request(fmt.Sprintf("%s/job/%s/%s/api/json", jenkinsEndpoint, chef_job, chef_number))
+	var msg []string
+	resp := jenkins_request(fmt.Sprintf("%s/job/%s/%d/api/json", jenkinsEndpoint, chef_job, chef_number))
 	//teste resposta http
 	//fmt.Println(resp)
 	messages, _ := io.ReadAll(resp.Body)
@@ -81,14 +84,14 @@ func Get_messages_chef(chef_job string, chef_number string) string {
 	json.Unmarshal(messages, &ObjMessages)
 
 	for j := range ObjMessages.ChangeSet.Items {
-		msg = ObjMessages.ChangeSet.Items[j].Comment
+		msg = append(msg, ObjMessages.ChangeSet.Items[j].Comment)
 	}
 	return msg
 }
 
 /*Function that GETs the i2 package commit messages*/
-func Get_messages_i2(i2_job string, i2_number string) string {
-	var msg string
+func Get_messages_i2(i2_job string, i2_number string) []string {
+	var msg []string
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s/%s/api/json", jenkinsEndpoint, i2_job, i2_number))
 	//teste resposta http
 	//fmt.Println(resp)
@@ -98,7 +101,7 @@ func Get_messages_i2(i2_job string, i2_number string) string {
 	json.Unmarshal(messages, &ObjMessages)
 
 	for j := range ObjMessages.ChangeSet.Items {
-		msg = ObjMessages.ChangeSet.Items[j].Comment
+		msg = append(msg, ObjMessages.ChangeSet.Items[j].Comment)
 		//msg = strings.TrimSuffix(msg, "\n")
 	}
 	return msg
