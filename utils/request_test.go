@@ -48,7 +48,7 @@ func TestGetLastPackage(t *testing.T) {
 	}
 }
 
-func TestXxx(t *testing.T) {
+func TestIsPackageInProd(t *testing.T) {
 	jenkins_request(jenkinsEndpoint)
 	var res int = GetProdPackage("kdp")
 	if res != 351 {
