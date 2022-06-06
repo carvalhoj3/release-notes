@@ -2,16 +2,22 @@ package utils
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
+	"regexp"
 	"sort"
+	"strconv"
+	"text/template"
 
 	"github.com/spf13/cobra"
 )
 
 //tla name
 var tla string
+var date string
+var destination string
 
 //package number
 var atual_package int
@@ -21,6 +27,72 @@ var package_released int
 var chef_messages []string
 var i2_messages []string
 var totalMessages []string
+var list []string
+
+type Change string
+
+type Release struct {
+	Tla      string
+	USNumber int
+	Date     string
+	Changes  []Change
+}
+
+func (c Change) String() string {
+
+	rg := regexp.MustCompile("\\[\\w+\\]\\[TP\\-(\\d+)\\]\\s\\-\\s.+")
+	str := rg.FindStringSubmatch(string(c))
+
+	if len(str) < 1 {
+		return string(c)
+	}
+
+	url := "https://ppb.tpondemand.com/entity/" + str[1]
+
+	return "<a href=\"" + url + "\">" + string(c) + "</a>"
+}
+func GetChanges(list []string) []Change {
+	changes := make([]Change, len(list))
+	for i := range list {
+		changes[i] = Change(list[i])
+	}
+	return changes
+
+}
+func Template() {
+	i, _ := strconv.Atoi(tla)
+	std1 := Release{
+		tla,
+		i,
+		date,
+		GetChanges(list),
+	}
+	x, _ := os.Open("utils/template.html")
+	b, _ := ioutil.ReadAll(x)
+	tmp1, err := template.New("template").Parse(string(b))
+	if err != nil {
+		fmt.Println(err)
+	}
+	// // standard output to print merged data
+	outFile, err := os.Create("utils/template1.html")
+	if err != nil {
+		fmt.Println("error")
+	}
+	// tmp1.Execute(outFile, std1)
+	tmp1.Execute(outFile, std1)
+}
+
+var config = Config{}
+
+func init() {
+	config.Read()
+}
+func SendEmail() {
+	subject := "Test email release notes"
+
+	r := NewRequest([]string{destination}, subject)
+	r.Send("utils/template1.html", map[string]string{"username": "kolibri"})
+}
 
 //Cobra is built on a structure of commands, arguments & flags.
 var cmdRoot = &cobra.Command{
@@ -80,9 +152,7 @@ var cmdRoot = &cobra.Command{
 			i2_messages = append(i2_messages, Get_messages_i2(i2_number)...)
 		}
 		totalMessages = append(chef_messages, i2_messages...)
-
 		verifiedMessages := make(map[string]bool)
-		list := []string{}
 		for _, m := range totalMessages {
 			if _, value := verifiedMessages[m]; !value {
 				verifiedMessages[m] = true
@@ -90,8 +160,15 @@ var cmdRoot = &cobra.Command{
 				sort.Strings(list)
 			}
 		}
-		fmt.Println(list)
+
+		Template()
+		if destination != "" {
+			SendEmail()
+		}
+
+		//fmt.Println(list)
 		fmt.Println("https://jenkins-prd.prd.betfair/job/release-notes-generator/ws/release-notes/releases.txt")
+		fmt.Println("utils/template1.html")
 		//generates test file and uses geti2 and getchef messages funcions to write to the file.
 		// create file
 		f, err := os.Create("releases.txt")
@@ -121,6 +198,8 @@ func init() {
 	cmdRoot.MarkFlagRequired("jenkinsUser")
 	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "", "Jenkins Token")
 	cmdRoot.MarkFlagRequired("jenkinsToken")
+	cmdRoot.Flags().StringVar(&destination, "destination", "", "Mail destination")
+	cmdRoot.Flags().StringVar(&date, "date", "", "Date of release")
 }
 
 //Funcion to execute or cobra funcions
