@@ -161,14 +161,13 @@ var cmdRoot = &cobra.Command{
 			}
 		}
 
-		Template()
 		if destination != "" {
+			Template()
 			SendEmail()
 		}
 
 		//fmt.Println(list)
 		fmt.Println("https://jenkins-prd.prd.betfair/job/release-notes-generator/ws/release-notes/releases.txt")
-		fmt.Println("utils/template1.html")
 		//generates test file and uses geti2 and getchef messages funcions to write to the file.
 		// create file
 		f, err := os.Create("releases.txt")
