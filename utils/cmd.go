@@ -161,8 +161,8 @@ var cmdRoot = &cobra.Command{
 			}
 		}
 
+		Template()
 		if destination != "" {
-			Template()
 			SendEmail()
 		}
 
