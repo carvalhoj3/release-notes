@@ -199,6 +199,7 @@ func init() {
 	cmdRoot.MarkFlagRequired("jenkinsToken")
 	cmdRoot.Flags().StringVar(&destination, "destination", "", "Mail destination")
 	cmdRoot.Flags().StringVar(&date, "date", "", "Date of release")
+
 }
 
 //Funcion to execute or cobra funcions
