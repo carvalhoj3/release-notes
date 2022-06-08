@@ -167,7 +167,7 @@ var cmdRoot = &cobra.Command{
 		}
 
 		//fmt.Println(list)
-		fmt.Println("https://jenkins-prd.prd.betfair/job/release-notes-generator/ws/release-notes/releases.txt")
+		fmt.Println("Click here to check the changes \n https://jenkins-prd.prd.betfair/job/release-notes-generator/ws/release-notes/releases.txt")
 		//generates test file and uses geti2 and getchef messages funcions to write to the file.
 		// create file
 		f, err := os.Create("releases.txt")
