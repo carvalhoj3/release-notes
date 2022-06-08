@@ -1,4 +1,4 @@
-server="ie1-mail-prd.prd.betfair"
-port=25
-email="kolibri@blip.pt"
+server="localhost"
+port=2525
+email="jose.carvalho2@blip.pt"
 password=""

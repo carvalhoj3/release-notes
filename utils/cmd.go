@@ -17,6 +17,7 @@ import (
 //tla name
 var tla string
 var date string
+var time string
 var destination string
 
 //package number
@@ -35,6 +36,7 @@ type Release struct {
 	Tla      string
 	USNumber int
 	Date     string
+	Time     string
 	Changes  []Change
 }
 
@@ -61,10 +63,14 @@ func GetChanges(list []string) []Change {
 }
 func Template() {
 	i, _ := strconv.Atoi(tla)
+	if date == "" || time == "" {
+		fmt.Printf("In order to send the email, you must inform the date and time of the release.")
+	}
 	std1 := Release{
 		tla,
 		i,
 		date,
+		time,
 		GetChanges(list),
 	}
 	x, _ := os.Open("utils/template.html")
@@ -162,7 +168,7 @@ var cmdRoot = &cobra.Command{
 		}
 
 		Template()
-		if destination != "" {
+		if destination != "" && date != "" && time != "" {
 			SendEmail()
 		}
 
@@ -199,6 +205,7 @@ func init() {
 	cmdRoot.MarkFlagRequired("jenkinsToken")
 	cmdRoot.Flags().StringVar(&destination, "destination", "", "Mail destination")
 	cmdRoot.Flags().StringVar(&date, "date", "", "Date of release")
+	cmdRoot.Flags().StringVar(&time, "time", "", "Time of release")
 
 }
 
