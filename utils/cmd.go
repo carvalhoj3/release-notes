@@ -167,7 +167,7 @@ var cmdRoot = &cobra.Command{
 			}
 		}
 
-		if destination != "" && date != "" && time != "" {
+		if destination != "" {
 			Template()
 			SendEmail()
 		}
