@@ -69,11 +69,8 @@ func Get_latest_build_i2(tla string, buildNumber int) int {
 
 /*Function that GETs the chef package commit messages*/
 func Get_messages_chef(chef_number int) []string {
-	//var chef_number, chef_job = Get_latest_build_chef("cds", 316)
 	var msg []string
 	resp := jenkins_request(fmt.Sprintf("%s/job/%s_chef_ci_build/%d/api/json", jenkinsEndpoint, tla, chef_number))
-	//teste resposta http
-	//fmt.Println(resp)
 	messages, _ := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	var ObjMessages structures.Messages
@@ -89,8 +86,6 @@ func Get_messages_chef(chef_number int) []string {
 func Get_messages_i2(i2_number int) []string {
 	var msg []string
 	resp := jenkins_request(fmt.Sprintf("%s/job/i2_%s_conf_ci/%d/api/json", jenkinsEndpoint, tla, i2_number))
-	//teste resposta http
-	//fmt.Println(resp)
 	messages, _ := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	var ObjMessages structures.Messages
