@@ -63,9 +63,7 @@ func GetChanges(list []string) []Change {
 }
 func Template() {
 	i, _ := strconv.Atoi(tla)
-	if date == "" || time == "" {
-		fmt.Printf("In order to send the email, you must inform the date and time of the release. \n")
-	}
+
 	std1 := Release{
 		tla,
 		i,
