@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"reflect"
 	"regexp"
 	"sort"
 	"strconv"
@@ -25,6 +24,7 @@ var atual_package int
 var package_released int
 var at_package string
 var packageR string
+var isNumber = regexp.MustCompile("(^[0-9]+$|^$)").MatchString
 
 //lists
 var chef_messages []string
@@ -107,19 +107,19 @@ var cmdRoot = &cobra.Command{
 	Example: "go run main.go --tla" + " cds" + " --package 300" + " --packageR 310",
 	Version: "1.0",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		// We need to support as string, sice we can pass an empty string as parameter
-		// if at_package != "" {
-		// 	atual_package, _ = strconv.Atoi(at_package)
-		// }
+		/*In order to this script work on jenkins (that only accepts stringVars), the flag needs to be a string,
+		after the user inserts the package we parsed it to an integer in order to be more easy and accurate some validations.*/
+
 		if at_package != "" {
 			atual_package, _ = strconv.Atoi(at_package)
 		}
+
 		if packageR != "" {
 			package_released, _ = strconv.Atoi(packageR)
 		}
 
-		if reflect.TypeOf(atual_package).Kind() != reflect.Int {
-			fmt.Println(atual_package, "atual package should be an integer")
+		if !isNumber(at_package) {
+			fmt.Println(at_package, "atual package should be an integer")
 			os.Exit(1)
 		}
 		if atual_package == 0 {
@@ -128,7 +128,7 @@ var cmdRoot = &cobra.Command{
 		// if rl_package != "" {
 		// 	package_released, _ = strconv.Atoi(rl_package)
 		// }
-		if reflect.TypeOf(package_released).Kind() != reflect.Int {
+		if !isNumber(packageR) {
 			fmt.Println(atual_package, "atual package should be an integer")
 			os.Exit(1)
 		}
