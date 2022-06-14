@@ -122,7 +122,7 @@ var cmdRoot = &cobra.Command{
 			fmt.Println(atual_package, "atual package should be an integer")
 			os.Exit(1)
 		}
-		if atual_package == -1 {
+		if atual_package == 0 {
 			atual_package = GetProdPackage(tla)
 		}
 		// if rl_package != "" {
@@ -132,7 +132,7 @@ var cmdRoot = &cobra.Command{
 			fmt.Println(atual_package, "atual package should be an integer")
 			os.Exit(1)
 		}
-		if package_released == -1 {
+		if package_released == 0 {
 			package_released = GetLastPackage(tla)
 		}
 		if len(tla) > 5 || len(tla) <= 0 {
