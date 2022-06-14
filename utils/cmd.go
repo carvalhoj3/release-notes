@@ -144,7 +144,7 @@ var cmdRoot = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		jenkins_request(jenkinsEndpoint)
 
-		if at_package == packageR {
+		if atual_package == package_released {
 			fmt.Printf("Both packages are equal, nothing to be released.")
 			os.Exit(1)
 		}
