@@ -23,6 +23,8 @@ var destination string
 //package number
 var atual_package int
 var package_released int
+var at_package string
+var packageR string
 
 //lists
 var chef_messages []string
@@ -109,6 +111,8 @@ var cmdRoot = &cobra.Command{
 		// if at_package != "" {
 		// 	atual_package, _ = strconv.Atoi(at_package)
 		// }
+		atual_package, _ = strconv.Atoi(packageR)
+		package_released, _ = strconv.Atoi(packageR)
 		if reflect.TypeOf(atual_package).Kind() != reflect.Int {
 			fmt.Println(atual_package, "atual package should be an integer")
 			os.Exit(1)
@@ -140,7 +144,7 @@ var cmdRoot = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		jenkins_request(jenkinsEndpoint)
 
-		if atual_package == package_released {
+		if at_package == packageR {
 			fmt.Printf("Both packages are equal, nothing to be released.")
 			os.Exit(1)
 		}
@@ -195,8 +199,8 @@ var cmdRoot = &cobra.Command{
 func init() {
 	cmdRoot.Flags().StringVar(&tla, "tla", "", "TLA name")
 	cmdRoot.MarkFlagRequired("tla")
-	cmdRoot.Flags().IntVar(&atual_package, "package", -1, "Prod Package number")
-	cmdRoot.Flags().IntVar(&package_released, "packageR", -1, "Package to be released number")
+	cmdRoot.Flags().StringVar(&at_package, "package", "", "Prod Package number")
+	cmdRoot.Flags().StringVar(&packageR, "packageR", "", "Package to be released number")
 	cmdRoot.Flags().StringVar(&jenkinsUser, "jenkinsUser", "", "Jenkins User")
 	cmdRoot.MarkFlagRequired("jenkinsUser")
 	cmdRoot.Flags().StringVar(&jenkinsToken, "jenkinsToken", "", "Jenkins Token")
