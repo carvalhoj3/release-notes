@@ -111,8 +111,9 @@ var cmdRoot = &cobra.Command{
 		// if at_package != "" {
 		// 	atual_package, _ = strconv.Atoi(at_package)
 		// }
-		atual_package, _ = strconv.Atoi(packageR)
+		atual_package, _ = strconv.Atoi(at_package)
 		package_released, _ = strconv.Atoi(packageR)
+
 		if reflect.TypeOf(atual_package).Kind() != reflect.Int {
 			fmt.Println(atual_package, "atual package should be an integer")
 			os.Exit(1)
