@@ -171,7 +171,6 @@ var cmdRoot = &cobra.Command{
 
 		for _, m := range totalMessages {
 			m = strings.TrimSpace(m)
-			fmt.Println(m, len(m))
 			if _, value := verifiedMessages[m]; !value {
 				verifiedMessages[m] = true
 				list = append(list, m)
