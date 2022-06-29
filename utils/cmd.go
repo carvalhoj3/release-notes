@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 	"text/template"
 
 	"github.com/spf13/cobra"
@@ -164,9 +165,13 @@ var cmdRoot = &cobra.Command{
 			i2_number := Get_latest_build_i2(tla, i)
 			i2_messages = append(i2_messages, Get_messages_i2(i2_number)...)
 		}
+
 		totalMessages = append(chef_messages, i2_messages...)
 		verifiedMessages := make(map[string]bool)
+
 		for _, m := range totalMessages {
+			m = strings.TrimSpace(m)
+			fmt.Println(m, len(m))
 			if _, value := verifiedMessages[m]; !value {
 				verifiedMessages[m] = true
 				list = append(list, m)
@@ -179,7 +184,6 @@ var cmdRoot = &cobra.Command{
 			SendEmail()
 		}
 
-		//fmt.Println(list)
 		fmt.Println("Click here to check the changes \n https://jenkins-prd.prd.betfair/job/release-notes-generator/ws/release-notes/releases.txt")
 		//generates test file and uses geti2 and getchef messages funcions to write to the file.
 		// create file

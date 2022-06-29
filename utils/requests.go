@@ -77,7 +77,7 @@ func Get_messages_chef(chef_number int) []string {
 	json.Unmarshal(messages, &ObjMessages)
 
 	for j := range ObjMessages.ChangeSet.Items {
-		msg = append(msg, ObjMessages.ChangeSet.Items[j].Comment)
+		msg = append(msg, ObjMessages.ChangeSet.Items[j].Msg)
 	}
 	return msg
 }
@@ -86,13 +86,14 @@ func Get_messages_chef(chef_number int) []string {
 func Get_messages_i2(i2_number int) []string {
 	var msg []string
 	resp := jenkins_request(fmt.Sprintf("%s/job/i2_%s_conf_ci/%d/api/json", jenkinsEndpoint, tla, i2_number))
+	fmt.Printf(fmt.Sprintf("%s/job/i2_%s_conf_ci/%d/api/json", jenkinsEndpoint, tla, i2_number))
 	messages, _ := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	var ObjMessages structures.Messages
 	json.Unmarshal(messages, &ObjMessages)
 
 	for j := range ObjMessages.ChangeSet.Items {
-		msg = append(msg, ObjMessages.ChangeSet.Items[j].Comment)
+		msg = append(msg, ObjMessages.ChangeSet.Items[j].Msg)
 	}
 	return msg
 }
